@@ -1,0 +1,19 @@
+{
+  "name": "foreman-agent",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A safety-first, multi-bot agent app (design phase).",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.1"
+  }
+}
