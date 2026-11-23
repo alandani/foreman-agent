@@ -10,6 +10,10 @@ export interface BotVersion {
   projects: string[];
   /** Tools above this level are refused even if listed. */
   riskCeiling: Risk;
+  /** Tools the owner has pre-approved for External use (never Destructive). */
+  standing?: string[];
+  /** Vault labels this bot may use. */
+  credentials?: string[];
 }
 
 export type Registry = ReadonlyMap<string, ToolDefinition>;

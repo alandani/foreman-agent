@@ -11,8 +11,10 @@ export type ErrorCode =
   | "path_outside_project"
   | "protected_file"
   | "needs_approval"
+  | "plan_expired"
   | "rejected"
   | "timeout"
+  | "tool_error"
   | "limit_reached"
   | "unknown_outcome";
 

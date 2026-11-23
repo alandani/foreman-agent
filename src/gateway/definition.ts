@@ -21,6 +21,10 @@ export interface ToolDefinition {
   /** A vault label, never a value. */
   credential?: string;
   version: number;
+  /** Names of string arguments that are paths inside the project root. */
+  pathFields?: string[];
+  /** True when the tool changes files, so protected paths are refused. */
+  writes?: boolean;
 }
 
 const NAME_RE = /^[a-z][a-z0-9]*(_[a-z0-9]+)*$/;
