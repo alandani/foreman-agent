@@ -1,3 +1,4 @@
+import path from "node:path";
 import { checkApproval, type ApprovalStore } from "./approvals.js";
 import type { ToolDefinition } from "./definition.js";
 import { checkGrant, findTool, type BotVersion, type Registry } from "./grants.js";
@@ -52,6 +53,8 @@ export interface GatewayEvent {
   code?: string;
   /** True when the call changed state outside the app's own bookkeeping. */
   changedState: boolean;
+  /** Short human description for the action log, for example "edit_file src/app.ts". */
+  summary?: string;
 }
 
 export interface Deps {
@@ -93,7 +96,7 @@ export async function callTool(
   const done = (
     verdict: GatewayEvent["verdict"],
     stage: string,
-    extra: { code?: string; changedState?: boolean } = {},
+    extra: { code?: string; changedState?: boolean; summary?: string } = {},
   ) => {
     const event: GatewayEvent = {
       runId: ctx.runId,
@@ -105,6 +108,7 @@ export async function callTool(
     };
     if (def) event.toolVersion = def.version;
     if (extra.code) event.code = extra.code;
+    if (extra.summary) event.summary = extra.summary;
     deps.log(event);
   };
   const deny = (stage: string, error: ToolError): Outcome => {
@@ -258,8 +262,10 @@ export async function callTool(
 
   // 12. Log; store the result so a repeat of this call returns it.
   deps.results.put(ctx.runId, seq, result);
+  const touched = Object.values(paths).map((abs) => path.relative(ctx.root, abs));
   done("allow", "execute", {
     changedState: def.risk !== "safe" && result.ok,
+    summary: [def.name, ...touched].join(" "),
     ...(result.ok ? {} : { code: result.code }),
   });
   return { verdict: "allow", result };
