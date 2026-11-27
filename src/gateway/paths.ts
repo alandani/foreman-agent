@@ -41,7 +41,9 @@ export function resolveInside(root: string, requested: string): PathResult {
   if (!isInside(realRoot, realProbe)) {
     return fail(`${requested} leads outside the project root through a link.`);
   }
-  return { ok: true, abs: lexical };
+  // Checks run against the real root, but callers measure paths against the
+  // root they passed in, so return the path under that root.
+  return { ok: true, abs: path.resolve(root, path.relative(realRoot, lexical)) };
 }
 
 function isInside(root: string, target: string): boolean {

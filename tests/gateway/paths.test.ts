@@ -43,3 +43,17 @@ describe("resolveInside", () => {
     });
   }
 });
+
+describe("resolveInside with a root reached through a symlink", () => {
+  it("returns the path under the root it was given", () => {
+    const linkedRoot = path.join(base, "linked-worktree");
+    fs.symlinkSync(root, linkedRoot);
+    const result = resolveInside(linkedRoot, "src/app.ts");
+    expect(result).toEqual({ ok: true, abs: path.join(linkedRoot, "src", "app.ts") });
+  });
+
+  it("still refuses a symlink that leads out", () => {
+    const result = resolveInside(path.join(base, "linked-worktree"), "link-out/secret.txt");
+    expect(result.ok).toBe(false);
+  });
+});
